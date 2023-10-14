@@ -1,13 +1,5 @@
 #BOARD_USES_GENERIC_AUDIO := true
 #
-ifneq ($(filter lahaina holi,$(TARGET_BOARD_PLATFORM)),)
-VARIANT := sm8350
-else ifneq ($(filter bengal kona lito,$(TARGET_BOARD_PLATFORM)),)
-VARIANT := sm8250
-else ifneq ($(filter trinket atoll msmnile msmnile_au,$(TARGET_BOARD_PLATFORM)),)
-VARIANT := sm8150
-endif
-
 #AUDIO_FEATURE_FLAGS
 BOARD_USES_ALSA_AUDIO := true
 TARGET_USES_AOSP_FOR_AUDIO := false
@@ -49,8 +41,13 @@ AUDIO_FEATURE_ENABLED_SVA_MULTI_STAGE := true
 ##AUDIO_FEATURE_FLAGS
 ifneq ($(strip $(TARGET_USES_RRO)), true)
 #Audio Specific device overlays
-DEVICE_PACKAGE_OVERLAYS += hardware/qcom-caf/$(VARIANT)/audio/configs/common/overlay
-$(warning "hardware/qcom-caf/$(VARIANT)/audio/configs/common/overlay")
+ifeq ($(TARGET_BOARD_PLATFORM),taro)
+# DEVICE_PACKAGE_OVERLAYS += hardware/qcom-caf/$(HW_VARIANT)/audio/primary-hal/configs/common/overlay
+$(warning "hardware/qcom-caf/$(HW_VARIANT)/audio/primary-hal/configs/common/overlay")
+else
+DEVICE_PACKAGE_OVERLAYS += hardware/qcom-caf/$(HW_VARIANT)/audio/configs/common/overlay
+$(warning "hardware/qcom-caf/$(HW_VARIANT)/audio/configs/common/overlay")
+endif
 endif
 
 ifneq ($(GENERIC_ODM_IMAGE),true)
